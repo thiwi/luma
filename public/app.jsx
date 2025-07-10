@@ -7,6 +7,8 @@ function App() {
   const [searching, setSearching] = useState(false);
   const [match, setMatch] = useState(null); // {partnerId, matchId}
   const [artwork, setArtwork] = useState([]);
+  const [links,setLinks] = useState([]);
+  const [rooms,setRooms] = useState([]);
 
   useEffect(() => {
     fetch('/api/session', { method: 'POST' , credentials: 'include'})
@@ -14,6 +16,8 @@ function App() {
         connectWs();
         loadEvents();
         loadArtworks();
+        loadLinks();
+        loadRooms();
       });
   }, []);
 
@@ -47,6 +51,33 @@ function App() {
     fetch('/api/artwork', { credentials: 'include' })
       .then(r => r.json())
       .then(setArtwork);
+  }
+
+  function loadLinks(){
+    fetch('/api/resonance-links',{credentials:'include'})
+      .then(r=>r.json())
+      .then(setLinks);
+  }
+
+  function loadRooms(){
+    fetch('/api/rooms/upcoming',{credentials:'include'})
+      .then(r=>r.json())
+      .then(setRooms);
+  }
+
+  function createLink(toId){
+    fetch('/api/resonance-links',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({to_user_id:toId})})
+      .then(loadLinks);
+  }
+
+  function joinRoom(id){
+    fetch(`/api/rooms/${id}/join`,{method:'POST',credentials:'include'})
+      .then(()=>connectRoomWs(id));
+  }
+
+  function connectRoomWs(id){
+    const socket=new WebSocket(`ws://${location.host}/ws/rooms/${id}`);
+    socket.onmessage=e=>setMessages(m=>[...m,e.data]);
   }
 
   function createEvent() {
@@ -133,6 +164,29 @@ function App() {
           </li>
         ))}
       </ul>
+
+      <div>
+        <h2 className="font-semibold">Resonance Links</h2>
+        <ul className="text-sm">
+          {links.map(l=>(<li key={l.id}>{l.id} - {l.partner_present? 'online':'offline'}</li>))}
+        </ul>
+        <input id="linkTarget" placeholder="Target user id" className="border p-1 mr-2" />
+        <button className="px-2 py-1 bg-gray-200 rounded" onClick={()=>{
+          const v=document.getElementById('linkTarget').value; if(v) createLink(v);
+        }}>Link</button>
+      </div>
+
+      <div>
+        <h2 className="font-semibold">Upcoming Rooms</h2>
+        <ul>
+          {rooms.map(r=> (
+            <li key={r.id} className="mt-1 flex items-center justify-between">
+              <span>{r.name} ({new Date(r.start_time).toLocaleTimeString()})</span>
+              <button className="ml-2 px-2 py-1 bg-gray-200 rounded" onClick={()=>joinRoom(r.id)}>Join</button>
+            </li>
+          ))}
+        </ul>
+      </div>
       <div>
         <h2 className="font-semibold">Messages</h2>
         <ul className="text-sm text-gray-600">
