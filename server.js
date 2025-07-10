@@ -4,6 +4,7 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 const publicDir = path.join(__dirname, 'public');
+const artworkDir = path.join(publicDir, 'artwork');
 
 // In-memory stores (for demo purposes)
 const sessions = new Map(); // token -> {userId,created,history:{matches:[],events:[]},settings:{},energySent:0,energyReceived:0}
@@ -246,6 +247,23 @@ const server = http.createServer(async (req,res)=>{
       res.writeHead(204);res.end();return;
     }
     jsonResponse(res,400,{error:'invalid target'});return;
+  }
+  if(req.method==='GET' && pathname==='/api/artwork'){
+    function walk(dir){
+      let results = [];
+      for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+        const full = path.join(dir, entry.name);
+        if(entry.isDirectory()){
+          results = results.concat(walk(full));
+        } else {
+          const rel = path.relative(artworkDir, full).split(path.sep).map(encodeURIComponent).join('/');
+          results.push('/artwork/' + rel);
+        }
+      }
+      return results;
+    }
+    jsonResponse(res,200,walk(artworkDir));
+    return;
   }
   if(req.method==='GET' && pathname==='/api/history'){
     jsonResponse(res,200,session.history); return;
