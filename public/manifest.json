@@ -1,0 +1,9 @@
+{
+  "name": "Luma",
+  "short_name": "Luma",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2EE5A3",
+  "icons": []
+}
