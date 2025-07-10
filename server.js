@@ -17,6 +17,12 @@ const activeMatches = new Map(); // matchId -> {users:[tokenA, tokenB], start, e
 let nextEventId = 1;
 let nextUserId = 1;
 let nextMatchId = 1;
+// premium features: resonance links and group rooms
+const resonanceLinks = new Map(); // id -> {id,from,to,createdAt,active}
+let nextLinkId = 1;
+const rooms = new Map(); // id -> {id,name,description,start,end,creator,isPublic,participants:Set}
+let nextRoomId = 1;
+const roomSockets = new Map(); // roomId -> Map(token,ws)
 
 function generateToken(){
   return crypto.randomBytes(16).toString('hex');
@@ -248,6 +254,51 @@ const server = http.createServer(async (req,res)=>{
     }
     jsonResponse(res,400,{error:'invalid target'});return;
   }
+  // --- Resonance Links (premium) ---
+  if(req.method==='POST' && pathname==='/api/resonance-links'){
+    const body = await parseBody(req).catch(()=>null);
+    const targetUser = body?.to_user_id;
+    if(!targetUser){ jsonResponse(res,400,{error:'invalid'}); return; }
+    const exists = Array.from(resonanceLinks.values()).find(l=>l.from===token && l.to===targetUser && l.active);
+    if(exists){ jsonResponse(res,409,{error:'exists'}); return; }
+    const id='L'+(nextLinkId++);
+    resonanceLinks.set(id,{id,from:token,to:targetUser,createdAt:Date.now(),active:true});
+    jsonResponse(res,201,{id});
+    return;
+  }
+  if(req.method==='GET' && pathname==='/api/resonance-links'){
+    const list = Array.from(resonanceLinks.values()).filter(l=>l.from===token && l.active).map(l=>{
+      const targetToken = Array.from(sessions.entries()).find(([k,v])=>v.userId===l.to)?.[0];
+      return {id:l.id,active:l.active,partner_present: wsClients.has(targetToken||''),last_seen:new Date(l.createdAt).toISOString()};
+    });
+    jsonResponse(res,200,list); return;
+  }
+  const linkDelMatch = pathname.match(/^\/api\/resonance-links\/(L\d+)$/);
+  if(req.method==='DELETE' && linkDelMatch){
+    const l = resonanceLinks.get(linkDelMatch[1]);
+    if(l && l.from===token){ l.active=false; }
+    res.writeHead(204);res.end(); return;
+  }
+  // --- Resonance Rooms (premium) ---
+  if(req.method==='POST' && pathname==='/api/rooms'){
+    const body = await parseBody(req).catch(()=>null);
+    if(!body || !body.name || !body.start_time || !body.end_time){ jsonResponse(res,400,{error:'invalid'}); return; }
+    const id='R'+(nextRoomId++);
+    rooms.set(id,{id,name:body.name,description:body.description||'',start:new Date(body.start_time).getTime(),end:new Date(body.end_time).getTime(),creator:token,isPublic:body.is_public!==false,participants:new Set()});
+    jsonResponse(res,201,{id}); return;
+  }
+  if(req.method==='GET' && pathname==='/api/rooms/upcoming'){
+    const now=Date.now();
+    const list=Array.from(rooms.values()).filter(r=>r.end>now).map(r=>({id:r.id,name:r.name,start_time:new Date(r.start).toISOString(),end_time:new Date(r.end).toISOString(),participants:r.participants.size}));
+    jsonResponse(res,200,list);return;
+  }
+  const joinRoomMatch=pathname.match(/^\/api\/rooms\/(R\d+)\/join$/);
+  if(req.method==='POST' && joinRoomMatch){
+    const r=rooms.get(joinRoomMatch[1]);
+    if(!r){ notFound(res); return; }
+    r.participants.add(token);
+    jsonResponse(res,200,{}); return;
+  }
   if(req.method==='GET' && pathname==='/api/artwork'){
     function walk(dir){
       let results = [];
@@ -302,7 +353,9 @@ function endMatch(id,reason){
 
 server.on('upgrade',(req,socket,head)=>{
   const parsed = url.parse(req.url,true);
-  if(parsed.pathname !== '/ws'){ socket.destroy(); return; }
+  const roomMatch = parsed.pathname.match(/^\/ws\/rooms\/(R\d+)$/);
+  const isMain = parsed.pathname === '/ws';
+  if(!isMain && !roomMatch){ socket.destroy(); return; }
   const token = (req.headers.cookie||'').split('session_id=')[1];
   if(!token || !sessions.has(token)){ socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n'); socket.destroy(); return; }
   const key = req.headers['sec-websocket-key'];
@@ -315,18 +368,34 @@ server.on('upgrade',(req,socket,head)=>{
     '\r\n'
   ];
   socket.write(headers.join('\r\n'));
-  wsClients.set(token,socket);
-  socket.on('data',buf=>{
-    const msg = parseFrame(buf);
-    if(msg.close){ socket.end(); wsClients.delete(token); return; }
-    if(msg.data) handleWsMessage(token,msg.data);
-  });
-  socket.on('close',()=>{
-    wsClients.delete(token);
-    for(const [id,m] of activeMatches){
-      if(m.users.includes(token)) endMatch(id,'disconnect');
-    }
-  });
+  if(isMain){
+    wsClients.set(token,socket);
+    socket.on('data',buf=>{
+      const msg = parseFrame(buf);
+      if(msg.close){ socket.end(); wsClients.delete(token); return; }
+      if(msg.data) handleWsMessage(token,msg.data);
+    });
+    socket.on('close',()=>{
+      wsClients.delete(token);
+      for(const [id,m] of activeMatches){
+        if(m.users.includes(token)) endMatch(id,'disconnect');
+      }
+    });
+  } else if(roomMatch){
+    const roomId = roomMatch[1];
+    const room = rooms.get(roomId);
+    if(!room){ socket.destroy(); return; }
+    let map = roomSockets.get(roomId);
+    if(!map){ map = new Map(); roomSockets.set(roomId,map); }
+    map.set(token,socket);
+    const broadcast = ()=>{
+      const msg = frame(JSON.stringify({event:'room_presence',room:roomId,count:map.size}));
+      for(const ws of map.values()){ try{ ws.write(msg); }catch(e){} }
+    };
+    broadcast();
+    socket.on('data',buf=>{ const m=parseFrame(buf); if(m.close){ socket.end(); }});
+    socket.on('close',()=>{ map.delete(token); broadcast(); });
+  }
 });
 
 setInterval(()=>{
