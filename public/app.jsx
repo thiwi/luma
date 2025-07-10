@@ -6,12 +6,14 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [searching, setSearching] = useState(false);
   const [match, setMatch] = useState(null); // {partnerId, matchId}
+  const [artwork, setArtwork] = useState([]);
 
   useEffect(() => {
     fetch('/api/session', { method: 'POST' , credentials: 'include'})
       .then(() => {
         connectWs();
         loadEvents();
+        loadArtworks();
       });
   }, []);
 
@@ -39,6 +41,12 @@ function App() {
     fetch('/api/events', { credentials: 'include'} )
       .then(r => r.json())
       .then(setEvents);
+  }
+
+  function loadArtworks() {
+    fetch('/api/artwork', { credentials: 'include' })
+      .then(r => r.json())
+      .then(setArtwork);
   }
 
   function createEvent() {
@@ -130,6 +138,14 @@ function App() {
         <ul className="text-sm text-gray-600">
           {messages.map((m,i) => (<li key={i}>{m}</li>))}
         </ul>
+      </div>
+      <div>
+        <h2 className="font-semibold">Artwork</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {artwork.map((p,i) => (
+            <img key={i} src={p} alt={p.split('/').pop()} className="w-full h-auto" />
+          ))}
+        </div>
       </div>
     </div>
   );
