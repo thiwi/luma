@@ -4,6 +4,8 @@ function App() {
   const [events, setEvents] = useState([]);
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [match, setMatch] = useState(null); // {partnerId, matchId}
 
   useEffect(() => {
     fetch('/api/session', { method: 'POST' , credentials: 'include'})
@@ -20,6 +22,14 @@ function App() {
       const msg = JSON.parse(e.data);
       if(msg.event === 'event_start' || msg.event === 'event_end' || msg.event === 'participant_joined' || msg.event==='participant_left'){
         loadEvents();
+      }
+      if(msg.event === 'match_found'){
+        setMatch({partnerId: msg.partnerId, matchId: msg.matchId});
+        setSearching(false);
+      }
+      if(msg.event === 'match_ended'){
+        setMatch(null);
+        setSearching(false);
       }
     };
     setWs(socket);
@@ -59,10 +69,54 @@ function App() {
     }
   }
 
+  function startMatchSearch(){
+    fetch('/api/match', {method:'POST', credentials:'include'})
+      .then(()=> setSearching(true));
+  }
+
+  function stopMatchSearch(){
+    fetch('/api/match', {method:'DELETE', credentials:'include'})
+      .then(()=> { setSearching(false); setMatch(null); });
+  }
+
+  function sendEnergyToMatch(){
+    if(!match) return;
+    if(ws && ws.readyState === WebSocket.OPEN){
+      ws.send(JSON.stringify({action:'send_energy', targetUser:match.partnerId}));
+    } else {
+      fetch('/api/energy', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        credentials:'include',
+        body:JSON.stringify({targetUser:match.partnerId})
+      });
+    }
+  }
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">Luma Prototype</h1>
       <button className="px-4 py-2 bg-teal-500 text-white rounded" onClick={createEvent}>Create Quick Event</button>
+
+      <div>
+        {match ? (
+          <div className="space-x-2">
+            <span>Matched with {match.partnerId}</span>
+            <button className="px-2 py-1 bg-teal-500 text-white rounded" onClick={sendEnergyToMatch}>Send Energy</button>
+            <button className="px-2 py-1 bg-gray-200 rounded" onClick={stopMatchSearch}>End Match</button>
+          </div>
+        ) : (
+          <div>
+            <button
+              className="px-4 py-2 bg-teal-500 text-white rounded"
+              onClick={searching ? stopMatchSearch : startMatchSearch}
+            >
+              {searching ? 'Cancel Search' : 'Find Match'}
+            </button>
+          </div>
+        )}
+      </div>
+
       <ul>
         {events.map(ev => (
           <li key={ev.id} className="mt-2 flex items-center justify-between">
