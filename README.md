@@ -23,6 +23,11 @@ starts PostgreSQL and Redis containers. The API is available at
 `http://localhost:8000/api` and the web interface at
 `http://localhost:8080`.
 
+The frontend uses the `VITE_API_URL` environment variable to locate the backend.
+When running with Docker Compose this resolves to `http://localhost:8000`.
+If you start the frontend separately, create a `.env` file inside `frontend` with
+`VITE_API_URL=http://localhost:8000`.
+
 Stop everything with:
 
 ```bash

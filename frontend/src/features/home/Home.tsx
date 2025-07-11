@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard';
 import EmptyState from '../../components/EmptyState';
+import { apiFetch } from '../../api/http';
 
 interface SuggestedEvent {
   id: string;
@@ -16,7 +17,7 @@ export default function Home() {
 
   useEffect(() => {
     // backend only exposes a simple list endpoint under /api/events
-    fetch('/api/events')
+    apiFetch('/api/events')
       .then((res) => res.json())
       .then((events) =>
         setData(
