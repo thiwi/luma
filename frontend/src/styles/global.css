@@ -3,6 +3,101 @@
 @tailwind utilities;
 
 :root {
-  --dawn-sand: #f8f5f2;
-  --night-blue: #001022;
+  /* Color palette */
+  --dawn-sand--4: #cac5b2;
+  --dawn-sand--3: #d4d0c1;
+  --dawn-sand--2: #dfdcd0;
+  --dawn-sand--1: #e9e7df;
+  --dawn-sand-0: #f4f3ef;
+  --dawn-sand-1: #fefefe;
+  --dawn-sand-2: #ffffff;
+  --dawn-sand-3: #ffffff;
+  --dawn-sand-4: #ffffff;
+
+  --night-blue--4: #000000;
+  --night-blue--3: #030406;
+  --night-blue--2: #0c1116;
+  --night-blue--1: #151d27;
+  --night-blue-0: #1e2a38;
+  --night-blue-1: #263648;
+  --night-blue-2: #2f4259;
+  --night-blue-3: #384f69;
+  --night-blue-4: #415b7a;
+
+  --mist-grey--4: #576174;
+  --mist-grey--3: #616d83;
+  --mist-grey--2: #6c7992;
+  --mist-grey--1: #7b869d;
+  --mist-grey-0: #8a94a8;
+  --mist-grey-1: #98a1b2;
+  --mist-grey-2: #a7aebd;
+  --mist-grey-3: #b5bcc8;
+  --mist-grey-4: #c4c9d3;
+
+  --wave-teal--4: #0f262c;
+  --wave-teal--3: #16363e;
+  --wave-teal--2: #1d4651;
+  --wave-teal--1: #245664;
+  --wave-teal-0: #2b6777;
+  --wave-teal-1: #317789;
+  --wave-teal-2: #38879c;
+  --wave-teal-3: #3f97af;
+  --wave-teal-4: #4aa5bd;
+
+  --ember-coral--4: #ce1c12;
+  --ember-coral--3: #e51f14;
+  --ember-coral--2: #eb3228;
+  --ember-coral--1: #ed483f;
+  --ember-coral-0: #f05f57;
+  --ember-coral-1: #f2756e;
+  --ember-coral-2: #f48b85;
+  --ember-coral-3: #f6a19d;
+  --ember-coral-4: #f8b8b4;
+
+  /* Typography */
+  --font-sans: 'Inter', sans-serif;
+  --font-weight-100: 100;
+  --font-weight-200: 200;
+  --font-weight-300: 300;
+  --font-weight-400: 400;
+  --font-weight-500: 500;
+  --font-weight-600: 600;
+  --font-weight-700: 700;
+  --font-base-size: 16px;
+  --font-fluid-scale: clamp(1rem, 1vw + .7rem, 1.4rem);
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Spacing - 4pt grid */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Elevation */
+  --shadow-ambient: 0 2px 4px rgba(0,0,0,0.02);
+  --shadow-key: 0 4px 8px rgba(0,0,0,0.08);
+  --shadow-spread: 0 0 8px rgba(0,0,0,0.08);
+}
+
+.dark {
+  /* Swap background and text colors for dark mode */
+  --bg-color: var(--night-blue-0);
+  --text-color: var(--dawn-sand-0);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-400);
+  background-color: var(--bg-color, var(--dawn-sand-0));
+  color: var(--text-color, var(--night-blue-0));
 }
