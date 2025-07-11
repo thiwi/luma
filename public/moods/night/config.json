@@ -1,0 +1,9 @@
+{
+  "id": "night",
+  "label": "Night",
+  "description": "Stars and moonlight for secrets and reflection.",
+  "colorPalette": ["#2C3E50", "#34495E"],
+  "visualEffect": "starfield",
+  "ambientSound": "distant_hum.mp3",
+  "icon": "\uD83C\uDF19"
+}

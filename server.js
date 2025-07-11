@@ -5,11 +5,12 @@ const fs = require('fs');
 const path = require('path');
 const publicDir = path.join(__dirname, 'public');
 const artworkDir = path.join(publicDir, 'artwork');
+const assetsDir = path.join(__dirname, 'assets');
 
 // In-memory stores (for demo purposes)
 const sessions = new Map(); // token -> {userId,created,history:{matches:[],events:[]},settings:{},energySent:0,energyReceived:0}
 // event record also tracks total energy exchanged
-const events = new Map(); // id -> {id,startTime,symbol,creator,participants:Set,status:'scheduled',startTs:0,endTs:0,energy:0}
+const events = new Map(); // id -> {id,startTime,symbol,mood,creator,participants:Set,status:'scheduled',startTs:0,endTs:0,energy:0}
 const wsClients = new Map(); // token -> ws connection
 const matchQueue = []; // tokens waiting for match
 // active match stores per user energy counters
@@ -23,6 +24,7 @@ let nextLinkId = 1;
 const rooms = new Map(); // id -> {id,name,description,start,end,creator,isPublic,participants:Set}
 let nextRoomId = 1;
 const roomSockets = new Map(); // roomId -> Map(token,ws)
+const allowedMoods = ['rain','sun','night','ember','fog','ocean'];
 
 function generateToken(){
   return crypto.randomBytes(16).toString('hex');
@@ -125,6 +127,19 @@ const server = http.createServer(async (req,res)=>{
 
   // Serve static files
   if(req.method === 'GET' && !pathname.startsWith('/api') && pathname !== '/ws'){
+    if(pathname.startsWith('/assets/')){
+      const full = path.join(assetsDir, pathname.substring('/assets/'.length));
+      if(full.startsWith(assetsDir)){
+        fs.readFile(full,(err,data)=>{
+          if(err){ notFound(res); return; }
+          const ext = path.extname(full);
+          const types = {'.mp3':'audio/mpeg'};
+          res.writeHead(200,{ 'Content-Type': types[ext] || 'application/octet-stream' });
+          res.end(data);
+        });
+        return;
+      }
+    }
     let file = pathname === '/' ? '/index.html' : pathname;
     const full = path.join(publicDir, file);
     if(full.startsWith(publicDir)){
@@ -143,11 +158,13 @@ const server = http.createServer(async (req,res)=>{
   const session = token ? sessions.get(token) : null;
 
   if(req.method==='POST' && pathname==='/api/session'){
+    const body = await parseBody(req).catch(()=>null);
     const newToken = generateToken();
     const userId = 'U'+(nextUserId++);
-    sessions.set(newToken,{userId,created:Date.now(),history:{matches:[],events:[]},settings:{},energySent:0,energyReceived:0});
+    const premium = body && body.premium === true;
+    sessions.set(newToken,{userId,created:Date.now(),premium,history:{matches:[],events:[]},settings:{},energySent:0,energyReceived:0});
     res.writeHead(201,{'Set-Cookie':`session_id=${newToken}; HttpOnly`,'Content-Type':'application/json'});
-    res.end(JSON.stringify({sessionToken:newToken,userId}));
+    res.end(JSON.stringify({sessionToken:newToken,userId,premium}));
     return;
   }
   if(!session){ res.writeHead(401);res.end();return; }
@@ -157,7 +174,7 @@ const server = http.createServer(async (req,res)=>{
     sessions.delete(token); res.writeHead(204);res.end(); return;
   }
   if(req.method==='GET' && pathname==='/api/profile'){
-    jsonResponse(res,200,{created:session.created,matchesCount:session.history.matches.length,eventsCount:session.history.events.length,energySent:session.energySent,energyReceived:session.energyReceived,settings:session.settings});
+    jsonResponse(res,200,{created:session.created,premium:session.premium,matchesCount:session.history.matches.length,eventsCount:session.history.events.length,energySent:session.energySent,energyReceived:session.energyReceived,settings:session.settings});
     return;
   }
   if(req.method==='PUT' && pathname==='/api/profile'){
@@ -170,24 +187,29 @@ const server = http.createServer(async (req,res)=>{
     sessions.delete(token); jsonResponse(res,204,{}); return;
   }
   if(req.method==='GET' && pathname==='/api/events'){
-    const list = Array.from(events.values()).map(e=>({id:e.id,startTime:e.startTime,symbol:e.symbol,participants:e.participants.size,status:e.status,energy:e.energy}));
+    const list = Array.from(events.values()).map(e=>({id:e.id,startTime:e.startTime,symbol:e.symbol,mood:e.mood,participants:e.participants.size,status:e.status,energy:e.energy}));
     jsonResponse(res,200,list); return;
   }
   if(req.method==='POST' && pathname==='/api/events'){
     const body = await parseBody(req).catch(()=>null);
     if(!body || !body.startTime || !body.symbol){ jsonResponse(res,400,{error:'invalid'}); return; }
+    let mood = body.mood;
+    if(mood){
+      if(!session.premium){ jsonResponse(res,403,{error:'premium required'}); return; }
+      if(!allowedMoods.includes(mood)) mood = undefined;
+    }
     const id='E'+(nextEventId++);
     const startTs = new Date(body.startTime).getTime();
-    events.set(id,{id,startTime:body.startTime,symbol:body.symbol,creator:token,participants:new Set([token]),status:'scheduled',startTs,endTs:startTs+5*60*1000,energy:0});
-    session.history.events.push({id,startTime:body.startTime,symbol:body.symbol});
-    jsonResponse(res,201,{id,startTime:body.startTime,symbol:body.symbol});
+    events.set(id,{id,startTime:body.startTime,symbol:body.symbol,mood:mood||null,creator:token,participants:new Set([token]),status:'scheduled',startTs,endTs:startTs+5*60*1000,energy:0});
+    session.history.events.push({id,startTime:body.startTime,symbol:body.symbol,mood:mood||null});
+    jsonResponse(res,201,{id,startTime:body.startTime,symbol:body.symbol,mood:mood||null});
     return;
   }
   const eventDetailMatch = path.match(/^\/api\/events\/(E\d+)$/);
   if(req.method==='GET' && eventDetailMatch){
     const ev = events.get(eventDetailMatch[1]);
     if(!ev){ notFound(res); return; }
-    jsonResponse(res,200,{id:ev.id,startTime:ev.startTime,symbol:ev.symbol,participants:ev.participants.size,status:ev.status,energy:ev.energy});
+    jsonResponse(res,200,{id:ev.id,startTime:ev.startTime,symbol:ev.symbol,mood:ev.mood,participants:ev.participants.size,status:ev.status,energy:ev.energy});
     return;
   }
   const eventJoinMatch = path.match(/^\/api\/events\/(E\d+)\/join$/);
@@ -195,7 +217,7 @@ const server = http.createServer(async (req,res)=>{
     const ev = events.get(eventJoinMatch[1]);
     if(!ev){ notFound(res); return; }
     ev.participants.add(token);
-    session.history.events.push({id:ev.id,startTime:ev.startTime,symbol:ev.symbol});
+    session.history.events.push({id:ev.id,startTime:ev.startTime,symbol:ev.symbol,mood:ev.mood});
     broadcastEvent(Array.from(ev.participants),{event:'participant_joined',eventId:ev.id,count:ev.participants.size});
     jsonResponse(res,200,{}) ; return;
   }

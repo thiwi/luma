@@ -1,0 +1,9 @@
+{
+  "id": "sun",
+  "label": "Sun",
+  "description": "Bright sunlight representing joy and warmth.",
+  "colorPalette": ["#FDE047", "#FFD272"],
+  "visualEffect": "bloom_light",
+  "ambientSound": "gentle_breeze.mp3",
+  "icon": "\u2600\uFE0F"
+}
