@@ -5,7 +5,7 @@ from .routers import events, matching, resonance
 from .middleware import PremiumMiddleware
 from . import models
 import uuid
-import aioredis
+import redis.asyncio as aioredis
 import os
 
 app = FastAPI()
