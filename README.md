@@ -1,36 +1,37 @@
 # Luma Prototype
 
-This repository contains a minimal proof-of-concept implementation of the Luma backend and a very small frontend. The service exposes a REST API and a WebSocket endpoint and serves a React-based prototype from the `public` directory.
+This repository contains a minimal proof-of-concept implementation of the Luma backend and a lightweight frontend. A FastAPI service exposes a REST API and WebSocket endpoint, while the React prototype lives in the `public` directory.
 
-Events created via the API start automatically at their scheduled time and broadcast `event_start`/`event_end` messages to all participants. Users can join events, exchange "energy" signals over WebSockets and search for anonymous matches.
+Events created via the API automatically broadcast start/end messages to participants. Users can join events, exchange "energy" signals over WebSockets and search for anonymous matches.
 
-Each event tracks the total amount of energy exchanged while it is active. Match history records the duration and how much energy was sent during the connection.
+Premium prototype features include:
 
-The implementation uses only Node's built‑in modules to avoid external dependencies. All data is stored in memory so the server is meant for demo purposes only.
-
-## Premium prototype features
-
-Two experimental features are included:
-
-* **Resonance links** – create persistent silent connections to other sessions via `/api/resonance-links` (POST to create, GET to list, DELETE to remove). Presence of the linked partner is returned in the list.
-* **Group rooms** – time bound "silent circles" that multiple participants can join. Rooms can be created with `/api/rooms`, listed via `/api/rooms/upcoming` and joined with `/api/rooms/:id/join`. A WebSocket connection at `/ws/rooms/:id` broadcasts presence updates.
-* **Mood customization** – premium users can select a mood when creating an event. The chosen mood is returned with event details and can be used by the frontend to render themed visuals and optional ambient audio.
+* **Resonance links** – create persistent silent connections to other sessions via `/api/resonance/link` and `/api/resonance/links`.
+* **Group rooms** – time bound "silent circles" that multiple participants can join.
+* **Mood customization** – premium users select a mood when creating an event.
 
 ## Running
 
-```
-node server.js
-```
+Install the Python dependencies and start the backend:
 
-The server listens on `http://localhost:3000`. Open this address in the browser to access the frontend. API calls can also be made directly. Start a session with:
-
-```
-curl -X POST http://localhost:3000/api/session
+```bash
+pip install -r requirements.txt
+uvicorn backend.main:app --reload
 ```
 
-Use the returned session cookie for subsequent requests. A WebSocket connection can be opened at `ws://localhost:3000/ws` with the session cookie.
+The API is then available at `http://localhost:8000/api`. Create a session with:
 
-The server exposes a simple health check at `/health` that returns `OK`.
+```bash
+curl -X POST http://localhost:8000/api/session
+```
+
+Serve the frontend from the `public` folder using any static file server, e.g.:
+
+```bash
+python3 -m http.server 8080 -d public
+```
+
+WebSocket connections can be opened at `ws://localhost:8000/ws/presence/{event_id}`.
 
 ## Kubernetes setup
 

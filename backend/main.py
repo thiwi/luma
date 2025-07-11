@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine, SessionLocal
 from .routers import events, matching, resonance
@@ -6,6 +6,7 @@ from .middleware import PremiumMiddleware
 from . import models
 import uuid
 import aioredis
+import os
 
 app = FastAPI()
 app.add_middleware(PremiumMiddleware)
@@ -19,13 +20,16 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
-redis = aioredis.from_url("redis://localhost")
+redis = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost"))
 
-app.include_router(events.router)
-app.include_router(matching.router)
-app.include_router(resonance.router)
+# group all API routes under /api
+api_router = APIRouter()
+api_router.include_router(events.router)
+api_router.include_router(matching.router)
+api_router.include_router(resonance.router)
+app.include_router(api_router, prefix="/api")
 
-@app.post("/session")
+@api_router.post("/session")
 async def create_session():
     token = str(uuid.uuid4())
     db = SessionLocal()
