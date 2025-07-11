@@ -1,5 +1,12 @@
 const { useState, useEffect } = React;
 
+// Determine backend API base URL. When running the Docker compose
+// setup the frontend is served on port 8080 while the API listens on
+// port 8000. Using a relative path would hit the frontend server
+// instead of the API and result in 404 errors, so construct the base
+// URL explicitly.
+const API_BASE = (window.API_URL || 'http://localhost:8000') + '/api';
+
 function App() {
   const [events, setEvents] = useState([]);
   const [links, setLinks] = useState([]);
@@ -18,7 +25,7 @@ function App() {
   const moodMap = Object.fromEntries(moodOptions.map(m=>[m.id,m.icon]));
 
   useEffect(() => {
-    fetch('/api/session', { method: 'POST' })
+    fetch(`${API_BASE}/session`, { method: 'POST' })
       .then((r) => r.json())
       .then((data) => {
         setSessionToken(data.token);
@@ -28,28 +35,28 @@ function App() {
   }, []);
 
 function loadEvents() {
-  fetch('/api/events')
+  fetch(`${API_BASE}/events`)
     .then((r) => r.json())
     .then(setEvents);
 }
 
 function loadLinks(token){
   if(!token) return;
-  fetch(`/api/resonance/links?session_token=${token}`)
+  fetch(`${API_BASE}/resonance/links?session_token=${token}`)
     .then((r) => r.ok ? r.json() : [])
     .then((data) => setLinks(Array.isArray(data) ? data : []));
 }
 
 function createLink(toId){
   if(!sessionToken) return;
-  fetch(`/api/resonance/link?session_token=${sessionToken}&target_token=${toId}`, {
+  fetch(`${API_BASE}/resonance/link?session_token=${sessionToken}&target_token=${toId}`, {
     method:'POST'
   }).then(() => loadLinks(sessionToken));
 }
 
 function createEvent() {
   if(!sessionToken) return;
-  fetch(`/api/events?session_token=${sessionToken}`, {
+  fetch(`${API_BASE}/events?session_token=${sessionToken}` , {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ content: 'Quick event', symbol:'\u2728', mood: isPremium ? mood : null })
