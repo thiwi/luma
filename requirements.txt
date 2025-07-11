@@ -2,4 +2,4 @@ fastapi
 uvicorn[standard]
 SQLAlchemy
 psycopg2-binary
-aioredis
+redis
