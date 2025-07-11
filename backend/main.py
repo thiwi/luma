@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine, SessionLocal
-from .routers import events, matching, resonance
+from .routers import events, matching, resonance, artwork
 from .middleware import PremiumMiddleware
 from . import models
 import uuid
@@ -27,6 +27,7 @@ api_router = APIRouter()
 api_router.include_router(events.router)
 api_router.include_router(matching.router)
 api_router.include_router(resonance.router)
+api_router.include_router(artwork.router)
 app.include_router(api_router, prefix="/api")
 
 @api_router.post("/session")
