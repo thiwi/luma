@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --dawn-sand: #f8f5f2;
+  --night-blue: #001022;
+}
