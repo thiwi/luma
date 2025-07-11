@@ -12,27 +12,26 @@ Premium prototype features include:
 
 ## Running
 
-Install the Python dependencies and start the backend:
+Start all services with Docker Compose:
 
 ```bash
-pip install -r requirements.txt
-uvicorn backend.main:app --reload
+scripts/start.sh
 ```
 
-The API is then available at `http://localhost:8000/api`. Create a session with:
+This launches the backend on port `8000`, the frontend on port `8080` and also
+starts PostgreSQL and Redis containers. The API is available at
+`http://localhost:8000/api` and the web interface at
+`http://localhost:8080`.
+
+Stop everything with:
 
 ```bash
-curl -X POST http://localhost:8000/api/session
-```
-
-Serve the frontend from the `public` folder using any static file server, e.g.:
-
-```bash
-python3 -m http.server 8080 -d public
+scripts/stop.sh
 ```
 
 WebSocket connections can be opened at `ws://localhost:8000/ws/presence/{event_id}`.
 
 ## Kubernetes setup
 
-Run `scripts/start.sh` to launch PostgreSQL, Redis and the FastAPI backend in Minikube using Helm. Use `scripts/stop.sh` to tear it down.
+The original Helm chart is still available for deployments on a local Minikube
+cluster.
