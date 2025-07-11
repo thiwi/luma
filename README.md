@@ -31,3 +31,7 @@ curl -X POST http://localhost:3000/api/session
 Use the returned session cookie for subsequent requests. A WebSocket connection can be opened at `ws://localhost:3000/ws` with the session cookie.
 
 The server exposes a simple health check at `/health` that returns `OK`.
+
+## Kubernetes setup
+
+Run `scripts/start.sh` to launch PostgreSQL, Redis and the FastAPI backend in Minikube using Helm. Use `scripts/stop.sh` to tear it down.
