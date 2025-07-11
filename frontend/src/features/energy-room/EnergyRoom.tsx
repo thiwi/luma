@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSession } from '../../store/session';
+import { apiFetch } from '../../api/http';
 
 interface EventMeta {
   id: string;
@@ -18,7 +19,7 @@ export default function EnergyRoom() {
 
   useEffect(() => {
     if (!eventId) return;
-    fetch(`/api/events/${eventId}`)
+    apiFetch(`/api/events/${eventId}`)
       .then((r) => r.json())
       .then(setEvent);
   }, [eventId]);

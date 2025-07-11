@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../../api/http';
 
 export default function CreateEvent() {
   const [text, setText] = useState('');
   const navigate = useNavigate();
 
   const submit = async () => {
-    const res = await fetch('/api/events', {
+    const res = await apiFetch('/api/events', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       // backend expects `content`, optional symbol and mood fields
@@ -21,7 +22,7 @@ export default function CreateEvent() {
   return (
     <div role="dialog" className="p-4 max-w-lg mx-auto space-y-4">
       <textarea
-        className="w-full p-2 border rounded resize-none"
+        className="w-full p-2 border rounded-md resize-none bg-dawnSand dark:bg-nightBlue/20"
         value={text}
         onChange={(e) => setText(e.target.value.slice(0, 100))}
         rows={3}
@@ -29,7 +30,7 @@ export default function CreateEvent() {
       />
       <div className="text-right text-sm opacity-70">{text.length}/100</div>
       <button
-        className="bg-nightBlue text-white px-4 py-2 rounded disabled:opacity-50"
+        className="bg-waveTeal-400 text-white px-4 py-2 rounded-md shadow-ambient hover:shadow-key transition-shadow disabled:opacity-50"
         disabled={text.length <= 1}
         onClick={submit}
       >

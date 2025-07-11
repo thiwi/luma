@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { apiFetch } from '../api/http';
 import { subscribeWithSelector } from 'zustand/middleware';
 
 export interface MoodConfig {
@@ -30,7 +31,7 @@ export const useSession = create<SessionState>()(
     initSession: async () => {
       if (get().sessionId) return;
       // backend exposes POST /api/session to create a new session
-      const res = await fetch('/api/session', { method: 'POST' });
+      const res = await apiFetch('/api/session', { method: 'POST' });
       const { sessionId } = await res.json();
       localStorage.setItem(storageKey, sessionId);
       set({ sessionId });

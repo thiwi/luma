@@ -14,7 +14,7 @@ export const EventCard: FC<EventCardProps> = ({
   onSendEnergy,
 }) => (
   <button
-    className="rounded-2xl shadow-sm bg-dawnSand dark:bg-nightBlue/20 p-6 w-full text-left flex items-center space-x-3"
+    className="rounded-md shadow-ambient hover:shadow-key bg-dawnSand dark:bg-nightBlue/20 p-6 w-full text-left flex items-center space-x-3 transition-shadow"
     onClick={onSendEnergy}
   >
     <span className="text-3xl">{symbol}</span>
