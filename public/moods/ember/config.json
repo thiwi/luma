@@ -1,0 +1,9 @@
+{
+  "id": "ember",
+  "label": "Ember",
+  "description": "Glowing pulses capturing anger or intensity.",
+  "colorPalette": ["#E74C3C", "#E67E22"],
+  "visualEffect": "glow_pulse",
+  "ambientSound": "slow_heartbeat.mp3",
+  "icon": "\uD83D\uDD25"
+}

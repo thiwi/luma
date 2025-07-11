@@ -9,10 +9,24 @@ function App() {
   const [artwork, setArtwork] = useState([]);
   const [links,setLinks] = useState([]);
   const [rooms,setRooms] = useState([]);
+  const [isPremium,setIsPremium] = useState(false);
+  const [mood,setMood] = useState('rain');
+
+  const moodOptions = [
+    {id:'rain',label:'Rain',icon:'\uD83C\uDF27\uFE0F'},
+    {id:'sun',label:'Sun',icon:'\u2600\uFE0F'},
+    {id:'night',label:'Night',icon:'\uD83C\uDF19'},
+    {id:'ember',label:'Ember',icon:'\uD83D\uDD25'},
+    {id:'fog',label:'Fog',icon:'\uD83C\uDF2B\uFE0F'},
+    {id:'ocean',label:'Ocean',icon:'\uD83C\uDF0A'}
+  ];
+  const moodMap = Object.fromEntries(moodOptions.map(m=>[m.id,m.icon]));
 
   useEffect(() => {
     fetch('/api/session', { method: 'POST' , credentials: 'include'})
-      .then(() => {
+      .then(r=>r.json())
+      .then(data => {
+        setIsPremium(!!data.premium);
         connectWs();
         loadEvents();
         loadArtworks();
@@ -86,7 +100,7 @@ function App() {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       credentials: 'include',
-      body: JSON.stringify({startTime, symbol:'\uD83C\uDF0C'})
+      body: JSON.stringify({startTime, symbol:'\uD83C\uDF0C', ...(isPremium ? {mood} : {})})
     }).then(loadEvents);
   }
 
@@ -135,6 +149,11 @@ function App() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">Luma Prototype</h1>
+      {isPremium && (
+        <select value={mood} onChange={e=>setMood(e.target.value)} className="border p-1 mr-2">
+          {moodOptions.map(m=> <option key={m.id} value={m.id}>{m.icon} {m.label}</option>)}
+        </select>
+      )}
       <button className="px-4 py-2 bg-teal-500 text-white rounded" onClick={createEvent}>Create Quick Event</button>
 
       <div>
@@ -159,7 +178,7 @@ function App() {
       <ul>
         {events.map(ev => (
           <li key={ev.id} className="mt-2 flex items-center justify-between">
-            <span>{ev.symbol} @ {new Date(ev.startTime).toLocaleTimeString()} ({ev.status}) - energy {ev.energy}</span>
+            <span>{ev.symbol} {ev.mood ? moodMap[ev.mood] : ''} @ {new Date(ev.startTime).toLocaleTimeString()} ({ev.status}) - energy {ev.energy}</span>
             <button className="ml-2 px-2 py-1 bg-gray-200 rounded" onClick={() => joinEvent(ev.id)}>Join</button>
           </li>
         ))}

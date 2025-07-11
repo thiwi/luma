@@ -1,0 +1,9 @@
+{
+  "id": "fog",
+  "label": "Fog",
+  "description": "Floating mist evoking confusion or uncertainty.",
+  "colorPalette": ["#BDC3C7", "#ECF0F1"],
+  "visualEffect": "floating_mist",
+  "ambientSound": "low_rumble.mp3",
+  "icon": "\uD83C\uDF2B\uFE0F"
+}

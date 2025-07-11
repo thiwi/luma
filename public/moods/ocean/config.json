@@ -1,0 +1,9 @@
+{
+  "id": "ocean",
+  "label": "Ocean",
+  "description": "Waves representing serenity and balance.",
+  "colorPalette": ["#1E90FF", "#00BFFF"],
+  "visualEffect": "wave_motion",
+  "ambientSound": "ocean.mp3",
+  "icon": "\uD83C\uDF0A"
+}

@@ -14,6 +14,7 @@ Two experimental features are included:
 
 * **Resonance links** – create persistent silent connections to other sessions via `/api/resonance-links` (POST to create, GET to list, DELETE to remove). Presence of the linked partner is returned in the list.
 * **Group rooms** – time bound "silent circles" that multiple participants can join. Rooms can be created with `/api/rooms`, listed via `/api/rooms/upcoming` and joined with `/api/rooms/:id/join`. A WebSocket connection at `/ws/rooms/:id` broadcasts presence updates.
+* **Mood customization** – premium users can select a mood when creating an event. The chosen mood is returned with event details and can be used by the frontend to render themed visuals and optional ambient audio.
 
 ## Running
 

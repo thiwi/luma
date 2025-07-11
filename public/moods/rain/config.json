@@ -1,0 +1,9 @@
+{
+  "id": "rain",
+  "label": "Rain",
+  "description": "Soft falling rain, symbolizing sadness or reflection.",
+  "colorPalette": ["#6C7A89", "#AAB2BD"],
+  "visualEffect": "rain_particles",
+  "ambientSound": "rain_light.mp3",
+  "icon": "\uD83C\uDF27\uFE0F"
+}
