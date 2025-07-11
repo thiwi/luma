@@ -15,9 +15,19 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/api/events/suggested')
+    // backend only exposes a simple list endpoint under /api/events
+    fetch('/api/events')
       .then((res) => res.json())
-      .then(setData)
+      .then((events) =>
+        setData(
+          events.map((ev: any) => ({
+            id: ev.id,
+            emoji: ev.symbol ?? '✨',
+            text: ev.content,
+            expiresIn: 0,
+          }))
+        )
+      )
       .catch(() => setData([]));
   }, []);
 

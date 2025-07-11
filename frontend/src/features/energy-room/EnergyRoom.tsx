@@ -25,8 +25,11 @@ export default function EnergyRoom() {
 
   useEffect(() => {
     if (!eventId || !sessionId) return;
+    // connect to backend websocket endpoint at /ws/presence/{event_id}
     const ws = new WebSocket(
-      `wss://api.luma/ws/presence?eventId=${eventId}&sid=${sessionId}`,
+      `${location.protocol === 'https:' ? 'wss' : 'ws'}://${
+        location.hostname
+      }:8000/ws/presence/${eventId}`,
     );
     ws.onmessage = (ev) => {
       const data = JSON.parse(ev.data);

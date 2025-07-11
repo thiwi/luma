@@ -29,7 +29,8 @@ export const useSession = create<SessionState>()(
       set((s) => ({ presence: { ...s.presence, [eventId]: count } })),
     initSession: async () => {
       if (get().sessionId) return;
-      const res = await fetch('/api/sessions', { method: 'POST' });
+      // backend exposes POST /api/session to create a new session
+      const res = await fetch('/api/session', { method: 'POST' });
       const { sessionId } = await res.json();
       localStorage.setItem(storageKey, sessionId);
       set({ sessionId });
