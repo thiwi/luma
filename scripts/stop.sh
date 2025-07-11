@@ -1,3 +1,3 @@
 #!/bin/bash
-helm uninstall luma
-minikube stop
+docker compose down
+
