@@ -14,13 +14,15 @@ export const EventCard: FC<EventCardProps> = ({
   onSendEnergy,
 }) => (
   <button
-    className="rounded-md shadow-ambient hover:shadow-key bg-dawnSand dark:bg-nightBlue/20 p-6 w-full text-left flex items-center space-x-3 transition-shadow"
+    className="card w-full text-left flex items-center space-x-3 transition-transform hover:shadow-key active:scale-95"
     onClick={onSendEnergy}
   >
     <span className="text-3xl">{symbol}</span>
     <div className="flex-1">
-      <p className="font-semibold">{text}</p>
-      <p className="text-xs opacity-70">{Math.ceil(expiresIn / 60)}m left</p>
+      <p className="card-title text-left">{text}</p>
+      <p className="card-subtext text-left">
+        {Math.ceil(expiresIn / 60)}m left
+      </p>
     </div>
   </button>
 );
