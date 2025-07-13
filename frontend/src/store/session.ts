@@ -31,10 +31,11 @@ export const useSession = create<SessionState>()(
     initSession: async () => {
       if (get().sessionId) return;
       // backend exposes POST /api/session to create a new session
+      // response payload is {"token": "<session token>"}
       const res = await apiFetch('/api/session', { method: 'POST' });
-      const { sessionId } = await res.json();
-      localStorage.setItem(storageKey, sessionId);
-      set({ sessionId });
+      const { token } = await res.json();
+      localStorage.setItem(storageKey, token);
+      set({ sessionId: token });
     },
   }))
 );
