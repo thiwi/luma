@@ -78,11 +78,10 @@ body {
 
 /* Card component */
 .card {
-  background-image: linear-gradient(
-    to bottom,
-    var(--card-day-start),
-    var(--card-day-end)
-  );
+  background-image:
+    linear-gradient(to bottom, var(--card-day-start), var(--card-day-end)),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 10px, transparent 10px, transparent 20px);
+  background-size: cover, 40px 40px;
   border-radius: 18px;
   padding: 24px;
   max-width: 90%;
