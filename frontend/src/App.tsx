@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useSession } from './store/session';
+import Header from './components/Header';
 
 export default function App() {
   const initSession = useSession((s) => s.initSession);
@@ -10,7 +11,8 @@ export default function App() {
   }, [initSession]);
 
   return (
-    <div className="min-h-screen bg-dawnSand dark:bg-nightBlue text-gray-800 dark:text-gray-100">
+    <div className="min-h-screen bg-white text-gray-800">
+      <Header />
       <Outlet />
     </div>
   );
