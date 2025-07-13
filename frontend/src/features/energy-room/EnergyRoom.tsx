@@ -21,7 +21,11 @@ export default function EnergyRoom() {
   return (
     <div className="p-4 flex flex-col items-center">
       <div className="relative w-full max-w-md">
-        <Link to="/" className="absolute right-0 -top-2 text-xl">
+        <Link
+          to="/"
+          aria-label="Close"
+          className="absolute right-2 top-2 text-xl text-white"
+        >
           ×
         </Link>
         <div className="card w-full text-center">{event ? event.content : '...'}</div>
