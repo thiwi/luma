@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
+from datetime import datetime
 
 class SessionCreate(BaseModel):
     pass
@@ -15,6 +16,6 @@ class EventCreate(BaseModel):
 class EventOut(EventCreate):
     id: int
     creator_id: int
-    created_at: str
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
