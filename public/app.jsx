@@ -5,7 +5,8 @@ const { useState, useEffect } = React;
 // port 8000. Using a relative path would hit the frontend server
 // instead of the API and result in 404 errors, so construct the base
 // URL explicitly.
-const API_BASE = (window.API_URL || "http://backend:8000") + "/api";
+const defaultHost = `${window.location.protocol}//${window.location.hostname}:8000`;
+const API_BASE = (window.API_URL || defaultHost) + "/api";
 
 function App() {
   const [events, setEvents] = useState([]);
