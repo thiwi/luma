@@ -20,13 +20,13 @@ scripts/start.sh
 
 This launches the backend on port `8000`, the frontend on port `8080` and also
 starts PostgreSQL and Redis containers. The API is available at
-`http://localhost:8000/api` and the web interface at
+`http://backend:8000/api` and the web interface at
 `http://localhost:8080`.
 
 The frontend uses the `VITE_API_URL` environment variable to locate the backend.
-When running with Docker Compose this resolves to `http://localhost:8000`.
+When running with Docker Compose this resolves to `http://backend:8000`.
 If you start the frontend separately, create a `.env` file inside `frontend` with
-`VITE_API_URL=http://localhost:8000`.
+`VITE_API_URL=http://backend:8000`.
 
 Stop everything with:
 
@@ -34,7 +34,7 @@ Stop everything with:
 scripts/stop.sh
 ```
 
-WebSocket connections can be opened at `ws://localhost:8000/ws/presence/{event_id}`.
+WebSocket connections can be opened at `ws://backend:8000/ws/presence/{event_id}`.
 
 ## Kubernetes setup
 
