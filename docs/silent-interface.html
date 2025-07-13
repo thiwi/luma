@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luma Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .card-wave {
+      background-image: linear-gradient(135deg, #fed7aa, #fef3c7);
+      position: relative;
+    }
+    .card-wave::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 Q25 0 50 20 T100 20 V100 H0 Z' fill='%23ffffff40'/%3E%3C/svg%3E");
+      background-size: 200% 100%;
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body class="bg-white font-sans text-gray-700">
+  <div class="w-full bg-gray-200 text-gray-600 text-sm py-1 px-4">luma.network</div>
+
+  <header class="flex items-center justify-between bg-gray-900 text-white px-4 py-3">
+    <div class="text-lg font-semibold">Luma</div>
+    <button id="menuBtn" class="flex flex-col space-y-1">
+      <span class="block w-6 h-0.5 bg-white"></span>
+      <span class="block w-6 h-0.5 bg-white"></span>
+      <span class="block w-6 h-0.5 bg-white"></span>
+    </button>
+  </header>
+
+  <main class="max-w-5xl mx-auto mt-10 p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-6">
+      <div class="card-wave rounded-2xl shadow-lg aspect-[4/3] flex items-center justify-center text-center p-4 hover:shadow-xl transition">
+        <p class="text-lg">I feel anxious about tomorrow.</p>
+      </div>
+      <div class="card-wave rounded-2xl shadow-lg aspect-[4/3] flex items-center justify-center text-center p-4 hover:shadow-xl transition">
+        <p class="text-lg">I look forward to a new sunrise.</p>
+      </div>
+      <div class="card-wave rounded-2xl shadow-lg aspect-[4/3] flex items-center justify-center text-center p-4 hover:shadow-xl transition">
+        <p class="text-lg">Just breathing in calm silence.</p>
+      </div>
+    </div>
+    <div class="text-center mt-6 text-black text-2xl">&#8595;</div>
+  </main>
+
+  <script>
+    // simple toggle for demonstration
+    const menuBtn = document.getElementById('menuBtn');
+    menuBtn.addEventListener('click', () => {
+      alert('Menu clicked');
+    });
+  </script>
+</body>
+</html>
