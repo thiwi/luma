@@ -28,7 +28,6 @@ api_router.include_router(events.router)
 api_router.include_router(matching.router)
 api_router.include_router(resonance.router)
 api_router.include_router(artwork.router)
-app.include_router(api_router, prefix="/api")
 
 @api_router.post("/session")
 async def create_session():
@@ -41,6 +40,8 @@ async def create_session():
     finally:
         db.close()
     return {"token": token}
+
+app.include_router(api_router, prefix="/api")
 
 @app.websocket("/ws/presence/{event_id}")
 async def websocket_endpoint(websocket, event_id: int):
