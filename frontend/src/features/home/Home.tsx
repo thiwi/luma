@@ -17,8 +17,8 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // backend only exposes a simple list endpoint under /api/events
-    apiFetch('/api/events')
+    // backend only exposes a simple list endpoint under /events
+    apiFetch('/events')
       .then((res) => res.json())
       .then((events) =>
         setData(

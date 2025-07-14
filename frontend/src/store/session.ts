@@ -30,9 +30,9 @@ export const useSession = create<SessionState>()(
       set((s) => ({ presence: { ...s.presence, [eventId]: count } })),
     initSession: async () => {
       if (get().sessionId) return;
-      // backend exposes POST /api/session to create a new session
+      // backend exposes POST /session to create a new session
       // response payload is {"token": "<session token>"}
-      const res = await apiFetch('/api/session', { method: 'POST' });
+      const res = await apiFetch('/session', { method: 'POST' });
       const { token } = await res.json();
       localStorage.setItem(storageKey, token);
       set({ sessionId: token });

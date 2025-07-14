@@ -13,7 +13,7 @@ export default function EnergyRoom() {
 
   useEffect(() => {
     if (!eventId) return;
-    apiFetch(`/api/events/${eventId}`)
+    apiFetch(`/events/${eventId}`)
       .then((r) => r.json())
       .then(setEvent);
   }, [eventId]);
