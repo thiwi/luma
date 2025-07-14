@@ -22,7 +22,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        API_URL: http://backend:8000
+        API_URL: /api
     depends_on:
       - backend
     ports:
