@@ -14,8 +14,8 @@ export default function CreateEvent() {
       body: JSON.stringify({ content: text, mood: 'rain', symbol: '✨' }),
     });
     if (res.ok) {
-      const { eventId } = await res.json();
-      navigate(`/energy/${eventId}`);
+      const { id } = await res.json();
+      navigate(`/energy/${id}`);
     }
   };
 
