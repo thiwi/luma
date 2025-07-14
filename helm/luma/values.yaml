@@ -1,4 +1,6 @@
 image: luma-backend:latest
+frontend:
+  image: luma-frontend:latest
 postgres:
   image: postgres:15
 redis:

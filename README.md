@@ -39,5 +39,20 @@ WebSocket connections can be opened at `ws://backend:8000/ws/presence/{event_id}
 
 ## Kubernetes setup
 
-The original Helm chart is still available for deployments on a local Minikube
-cluster.
+Build the container images and deploy the chart to a local cluster. When used
+with Docker Compose the frontend image is built automatically with
+`API_URL=http://backend:8000`. For Kubernetes the API is reachable through the
+Ingress on the same host, so build the frontend with a relative `/api` base
+path:
+
+```bash
+docker build -t luma-backend:latest -f backend/Dockerfile .
+docker build -t luma-frontend:latest \
+  --build-arg API_URL=/api -f frontend/Dockerfile .
+
+helm install luma helm/luma
+```
+
+Add `127.0.0.1 luma.local` to your `/etc/hosts` and run `kubectl port-forward
+svc/luma-frontend 8080:80` to open the web interface at
+`http://luma.local:8080` on macOS.
