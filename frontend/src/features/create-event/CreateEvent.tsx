@@ -7,7 +7,7 @@ export default function CreateEvent() {
   const navigate = useNavigate();
 
   const submit = async () => {
-    const res = await apiFetch('/api/events', {
+    const res = await apiFetch('/events', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       // backend expects `content`, optional symbol and mood fields
