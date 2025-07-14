@@ -12,10 +12,16 @@ services:
       - redis
     ports:
       - "8000:8000"
+    networks:
+      default:
+        aliases:
+          - luma-backend
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        API_URL: http://backend:8000
     depends_on:
       - backend
     ports:

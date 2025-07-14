@@ -11,6 +11,20 @@ spec:
         pathType: Prefix
         backend:
           service:
+            name: luma-frontend
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: luma-backend
+            port:
+              number: 80
+      - path: /ws
+        pathType: Prefix
+        backend:
+          service:
             name: luma-backend
             port:
               number: 80

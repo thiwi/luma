@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: luma-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: luma-frontend
+  template:
+    metadata:
+      labels:
+        app: luma-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: {{ .Values.frontend.image }}
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: luma-frontend
+spec:
+  selector:
+    app: luma-frontend
+  ports:
+  - port: 80
+    targetPort: 80
