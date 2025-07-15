@@ -24,17 +24,17 @@ export default function EnergyRoom() {
 
   return (
     <div className="p-4 flex flex-col items-center">
-      <div className="relative w-full max-w-md">
-        <Link
-          to="/"
-          aria-label="Close"
-          className="absolute right-2 top-2 text-xl text-white"
-        >
-          ×
-        </Link>
-        <div className="card w-full text-center">
+      <div className="w-full max-w-md">
+        <div className="card w-full text-center relative group">
+          <Link
+            to="/"
+            aria-label="Leave"
+            className="absolute right-2 top-2 text-xs text-black opacity-0 group-hover:opacity-100"
+          >
+            leave
+          </Link>
           <p className="card-title">{content || '...'}</p>
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-gray-400 absolute bottom-2 left-0 right-0">
             3 people are with you in this moment.
           </p>
         </div>
