@@ -24,6 +24,9 @@ starts PostgreSQL and Redis containers. The API is available at
 `http://localhost:8000/api` and the web interface at
 `http://localhost:8080`.
 
+On startup the backend populates the database with a few sample events so that
+the main page immediately shows three example cards.
+
 The frontend uses the `VITE_API_URL` environment variable to locate the backend.
 If this variable is not set the application falls back to the same hostname on
 port `8000`. When running with Docker Compose the variable is automatically set

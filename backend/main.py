@@ -20,6 +20,43 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
+
+def seed_data():
+    """Populate the database with a few default events."""
+    db = SessionLocal()
+    try:
+        # Only seed when the tables are empty
+        if db.query(models.Event).count() > 0:
+            return
+
+        # create a session to own the seed events
+        seed_session = models.Session(token="seed")
+        db.add(seed_session)
+        db.commit()
+        db.refresh(seed_session)
+
+        default_events = [
+            {"symbol": "🌅", "content": "Watch the sunrise"},
+            {"symbol": "😊", "content": "Smile at a stranger"},
+            {"symbol": "🎵", "content": "Listen to your favorite song"},
+        ]
+
+        for ev in default_events:
+            db_event = models.Event(
+                creator_id=seed_session.id,
+                mood=None,
+                symbol=ev["symbol"],
+                content=ev["content"],
+            )
+            db.add(db_event)
+
+        db.commit()
+    finally:
+        db.close()
+
+
+seed_data()
+
 redis = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost"))
 
 # group all API routes under /api
