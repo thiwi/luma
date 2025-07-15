@@ -28,7 +28,9 @@ export default function Home() {
               key={ev.id}
               text={ev.text}
               expiresIn={ev.expiresIn}
-              onSendEnergy={() => navigate(`/energy/${ev.id}`)}
+              onSendEnergy={() =>
+                navigate(`/energy/${ev.id}`, { state: { text: ev.text } })
+              }
             />
           ))}
         </div>
