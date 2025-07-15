@@ -11,9 +11,15 @@ export default function CreateMomentModal({ onClose }: Props) {
   const [text, setText] = useState('');
   const navigate = useNavigate();
   const sessionId = useSession((s) => s.sessionId);
+  const initSession = useSession((s) => s.initSession);
 
   const submit = async () => {
-    const res = await apiFetch(`/events?session_token=${sessionId}`, {
+    let sid = sessionId;
+    if (!sid) {
+      await initSession();
+      sid = useSession.getState().sessionId;
+    }
+    const res = await apiFetch(`/events?session_token=${sid}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content: text, mood: 'rain', symbol: '✨' }),
@@ -37,11 +43,11 @@ export default function CreateMomentModal({ onClose }: Props) {
         />
         <div className="text-right text-sm opacity-70">{text.length}/100</div>
         <div className="flex justify-end space-x-2">
-          <button className="px-4 py-2 text-gray-600" onClick={onClose}>
+          <button className="px-4 py-2 text-black" onClick={onClose}>
             Leave
           </button>
           <button
-            className="bg-waveTeal-400 text-white px-4 py-2 rounded-md shadow-ambient hover:shadow-key transition-shadow disabled:opacity-50"
+            className="bg-waveTeal-400 text-black px-4 py-2 rounded-md shadow-ambient hover:shadow-key transition-shadow disabled:opacity-50"
             disabled={text.length <= 1}
             onClick={submit}
           >
