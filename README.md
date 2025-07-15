@@ -7,8 +7,9 @@ Events created via the API automatically broadcast start/end messages to partici
 Premium prototype features include:
 
 * **Resonance links** – create persistent silent connections to other sessions via `/api/resonance/link` and `/api/resonance/links`.
-* **Group rooms** – time bound "silent circles" that multiple participants can join.
+* **Group rooms** – time bound "silent circles" that multiple participants can join (see `/api/moodrooms`).
 * **Mood customization** – premium users select a mood when creating an event.
+* **User accounts** – sign up and login via `/api/auth/signup` and `/api/auth/login` to obtain a session token.
 
 ## Running
 
