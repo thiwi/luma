@@ -12,7 +12,7 @@ export const EventCard: FC<EventCardProps> = ({
   onSendEnergy,
 }) => (
   <button
-    className="card w-full text-center space-y-2 transition-transform hover:shadow-key active:scale-95"
+    className="card w-64 h-64 text-center space-y-2 transition-transform hover:shadow-key active:scale-95"
     onClick={onSendEnergy}
   >
     <p className="card-title">{text}</p>
