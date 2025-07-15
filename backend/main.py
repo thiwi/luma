@@ -6,7 +6,9 @@ from .middleware import PremiumMiddleware
 from . import models
 import uuid
 import redis.asyncio as aioredis
+from redis.exceptions import RedisError
 import os
+from .fake_redis import FakeRedis
 
 app = FastAPI()
 app.add_middleware(PremiumMiddleware)
@@ -57,7 +59,20 @@ def seed_data():
 
 seed_data()
 
-redis = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost"))
+# Try to connect to a Redis server if one is configured. Otherwise fall back to
+# an in-memory implementation so the application can run without the Redis
+# service.
+redis_url = os.getenv("REDIS_URL")
+if redis_url:
+    try:
+        redis = aioredis.from_url(redis_url)
+        # ensure the connection works
+        import asyncio
+        asyncio.run(redis.ping())
+    except Exception:
+        redis = FakeRedis()
+else:
+    redis = FakeRedis()
 
 # group all API routes under /api
 api_router = APIRouter()

@@ -19,8 +19,9 @@ Start all services with Docker Compose:
 scripts/start.sh
 ```
 
-This launches the backend on port `8000`, the frontend on port `8080` and also
-starts PostgreSQL and Redis containers. The API is available at
+This launches the backend on port `8000` and the frontend on port `8080` while
+also starting a PostgreSQL container. Redis is optional – if no server is
+available the application falls back to an in-memory implementation. The API is available at
 `http://localhost:8000/api` and the web interface at
 `http://localhost:8080`.
 
