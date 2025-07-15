@@ -22,7 +22,7 @@ export default function CreateEvent() {
       body: JSON.stringify({ content: text, mood: 'rain', symbol: '✨' }),
     });
     if (res.status === 404) {
-      await initSession();
+      await initSession(true);
       sid = useSession.getState().sessionId;
       res = await apiFetch(`/events?session_token=${sid}`, {
         method: 'POST',

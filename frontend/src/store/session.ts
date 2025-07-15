@@ -14,7 +14,7 @@ export interface SessionState {
   presence: { [eventId: string]: number };
   setPremium: (v: boolean) => void;
   setPresence: (eventId: string, count: number) => void;
-  initSession: () => Promise<void>;
+  initSession: (force?: boolean) => Promise<void>;
 }
 
 const storageKey = 'sessionId';
@@ -28,8 +28,8 @@ export const useSession = create<SessionState>()(
     setPremium: (v) => set({ isPremium: v }),
     setPresence: (eventId, count) =>
       set((s) => ({ presence: { ...s.presence, [eventId]: count } })),
-    initSession: async () => {
-      if (get().sessionId) return;
+    initSession: async (force?: boolean) => {
+      if (get().sessionId && !force) return;
       // backend exposes POST /session to create a new session
       // response payload is {"token": "<session token>"}
       const res = await apiFetch('/session', { method: 'POST' });
