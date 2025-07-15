@@ -1,21 +1,25 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { apiFetch } from '../../api/http';
 
 interface EventMeta {
   id: string;
   mood: string;
+  content: string;
 }
 
 export default function EnergyRoom() {
   const { eventId } = useParams();
-  const [event, setEvent] = useState<EventMeta | null>(null);
+  const location = useLocation();
+  const [content, setContent] = useState<string>(
+    (location.state as { text?: string } | null)?.text || ''
+  );
 
   useEffect(() => {
     if (!eventId) return;
     apiFetch(`/events/${eventId}`)
       .then((r) => r.json())
-      .then(setEvent);
+      .then((data: EventMeta) => setContent(data.content));
   }, [eventId]);
 
   return (
@@ -28,8 +32,12 @@ export default function EnergyRoom() {
         >
           ×
         </Link>
-        <div className="card w-full text-center">{event ? event.content : '...'}</div>
-        <p className="text-center mt-4">You are now in this moment</p>
+        <div className="card w-full text-center">
+          <p className="card-title">{content || '...'}</p>
+          <p className="text-xs text-gray-400 mt-2">
+            3 people are with you in this moment.
+          </p>
+        </div>
       </div>
     </div>
   );
