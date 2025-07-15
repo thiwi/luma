@@ -1,10 +1,17 @@
-<svg viewBox="0 0 1440 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-<path fill="#f8f5f0" d="M0,160 C240,120 1200,200 1440,160 L1440,400 L0,400 Z"/>
-<path fill="#e9e4dc" d="M0,180 C240,140 1200,220 1440,180 L1440,400 L0,400 Z"/>
-<path fill="#d9d2c3" d="M0,200 C240,160 1200,240 1440,200 L1440,400 L0,400 Z"/>
-<path fill="#c9c0ad" d="M0,220 C240,180 1200,260 1440,220 L1440,400 L0,400 Z"/>
-<path fill="#b8ae98" d="M0,240 C240,200 1200,280 1440,240 L1440,400 L0,400 Z"/>
-<path fill="#a79c84" d="M0,260 C240,220 1200,300 1440,260 L1440,400 L0,400 Z"/>
-<path fill="#978b71" d="M0,280 C240,240 1200,320 1440,280 L1440,400 L0,400 Z"/>
-<path fill="#867a5f" d="M0,300 C240,260 1200,340 1440,300 L1440,400 L0,400 Z"/>
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 400" preserveAspectRatio="none">
+	<path fill="#fdfbf7" d="M0,160 C240,120 1200,200 1440,160 L1440,400 L0,400 Z"/>
+	<path fill="#f4f1e8" d="M0,180 C240,140 1200,220 1440,180 L1440,400 L0,400 Z"/>
+	<path fill="#eae6da" d="M0,200 C240,160 1200,240 1440,200 L1440,400 L0,400 Z"/>
+	<path fill="#dfdbcd" d="M0,220 C240,180 1200,260 1440,220 L1440,400 L0,400 Z"/>
+	<path fill="#d5d1c1" d="M0,240 C240,200 1200,280 1440,240 L1440,400 L0,400 Z"/>
+	<path fill="#cac6b6" d="M0,260 C240,220 1200,300 1440,260 L1440,400 L0,400 Z"/>
+	<path fill="#c0bcab" d="M0,280 C240,240 1200,320 1440,280 L1440,400 L0,400 Z"/>
+	<defs>
+		<linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#b5b2a1;stop-opacity:1"/>
+			<stop offset="100%" style="stop-color:#ffffff;stop-opacity:1"/>
+		</linearGradient>
+	</defs>
+	<path fill="url(#grad1)" d="M0,300 C240,260 1200,340 1440,300 L1440,400 L0,400 Z"/>
 </svg>
