@@ -78,15 +78,23 @@ body {
 
 /* Card component */
 .card {
-  background-image:
-    linear-gradient(to bottom, var(--card-day-start), var(--card-day-end)),
-    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 10px, transparent 10px, transparent 20px);
-  background-size: cover, 40px 40px;
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(to bottom, var(--wave-start), var(--wave-end));
   border-radius: 18px;
   padding: 24px;
   max-width: 90%;
   margin: 0 auto;
   color: var(--text-day);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 Q25 0 50 20 T100 20V100 H0 Z' fill='%23ffffff40'/%3E%3C/svg%3E");
+  background-size: 200% 100%;
+  opacity: 0.3;
 }
 
 .dark .card {
