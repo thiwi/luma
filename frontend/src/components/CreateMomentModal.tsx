@@ -19,11 +19,22 @@ export default function CreateMomentModal({ onClose }: Props) {
       await initSession();
       sid = useSession.getState().sessionId;
     }
-    const res = await apiFetch(`/events?session_token=${sid}`, {
+    let res = await apiFetch(`/events?session_token=${sid}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content: text, mood: 'rain', symbol: '✨' }),
     });
+    // When the session token is stale the backend responds with 404.
+    // In that case create a new session and retry once.
+    if (res.status === 404) {
+      await initSession();
+      sid = useSession.getState().sessionId;
+      res = await apiFetch(`/events?session_token=${sid}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: text, mood: 'rain', symbol: '✨' }),
+      });
+    }
     if (res.ok) {
       const { id } = await res.json();
       onClose();
