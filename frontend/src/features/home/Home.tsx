@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard';
+import { apiFetch } from '../../api/http';
 
 interface SuggestedEvent {
   id: string;
@@ -8,16 +9,19 @@ interface SuggestedEvent {
   expiresIn: number;
 }
 
-const defaultEvents: SuggestedEvent[] = [
-  { id: '1', text: 'I have a difficult exam tomorrow.', expiresIn: 0 },
-  { id: '2', text: 'Afraid to go home tonight.', expiresIn: 0 },
-  { id: '3', text: 'Feeling happy today.', expiresIn: 0 },
-];
 
 export default function Home() {
-  const [data] = useState<SuggestedEvent[]>(defaultEvents);
+  const [data, setData] = useState<SuggestedEvent[]>([]);
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    apiFetch('/events')
+      .then((r) => r.json())
+      .then((events: any[]) =>
+        setData(events.map((e) => ({ id: String(e.id), text: e.content, expiresIn: 0 })))
+      );
+  }, []);
 
   return (
     <div className="p-4 space-y-4 flex flex-col items-center">

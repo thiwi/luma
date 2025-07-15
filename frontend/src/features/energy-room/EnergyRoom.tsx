@@ -29,7 +29,7 @@ export default function EnergyRoom() {
           <Link
             to="/"
             aria-label="Leave"
-            className="absolute right-2 top-2 text-xs text-black opacity-0 group-hover:opacity-100"
+            className="absolute right-2 top-2 text-xs text-gray-400 opacity-0 group-hover:opacity-100"
           >
             leave
           </Link>
