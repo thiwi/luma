@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export default function Header() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#b5b2a1]">
+    <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#f4f1e8]">
       <Link to="/" className="font-bold text-lg">
         Luma
       </Link>
