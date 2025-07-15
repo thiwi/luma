@@ -14,7 +14,7 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/", response_model=schemas.EventOut)
+@router.post("", response_model=schemas.EventOut)
 def create_event(event: schemas.EventCreate, session_token: str, db: Session = Depends(get_db)):
     session = db.query(models.Session).filter_by(token=session_token).first()
     if not session:
@@ -25,7 +25,7 @@ def create_event(event: schemas.EventCreate, session_token: str, db: Session = D
     db.refresh(db_event)
     return db_event
 
-@router.get("/", response_model=list[schemas.EventOut])
+@router.get("", response_model=list[schemas.EventOut])
 def list_events(db: Session = Depends(get_db)):
     return db.query(models.Event).all()
 
