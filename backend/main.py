@@ -38,16 +38,16 @@ def seed_data():
         db.refresh(seed_session)
 
         default_events = [
-            {"symbol": "🌅", "content": "Watch the sunrise"},
-            {"symbol": "😊", "content": "Smile at a stranger"},
-            {"symbol": "🎵", "content": "Listen to your favorite song"},
+            {"content": "I have a difficult exam tomorrow."},
+            {"content": "I am afraid to go home tonight."},
+            {"content": "Missing my parents."},
         ]
 
         for ev in default_events:
             db_event = models.Event(
                 creator_id=seed_session.id,
                 mood=None,
-                symbol=ev["symbol"],
+                symbol=None,
                 content=ev["content"],
             )
             db.add(db_event)
