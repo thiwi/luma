@@ -80,7 +80,8 @@ body {
 .card {
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(to bottom, var(--wave-start), var(--wave-end));
+  background-image: url('/luma_waves_gray_sand.svg');
+  background-size: cover;
   border-radius: 18px;
   padding: 24px;
   max-width: 90%;
@@ -88,22 +89,15 @@ body {
   color: var(--text-day);
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 Q25 0 50 20 T100 20V100 H0 Z' fill='%23ffffff40'/%3E%3C/svg%3E");
-  background-size: 200% 100%;
-  opacity: 0.3;
-}
-
 .dark .card {
   background-color: var(--card-mood-bg);
-  background-image: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.05) 0,
-    transparent 70%
-  );
+  background-image: url('/luma_waves_gray_sand.svg'),
+    radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.05) 0,
+      transparent 70%
+    );
+  background-size: cover, auto;
   color: var(--text-night);
 }
 
