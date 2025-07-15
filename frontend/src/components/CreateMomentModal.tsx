@@ -27,7 +27,7 @@ export default function CreateMomentModal({ onClose }: Props) {
     // When the session token is stale the backend responds with 404.
     // In that case create a new session and retry once.
     if (res.status === 404) {
-      await initSession();
+      await initSession(true);
       sid = useSession.getState().sessionId;
       res = await apiFetch(`/events?session_token=${sid}`, {
         method: 'POST',
