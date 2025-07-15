@@ -89,6 +89,13 @@ body {
   color: var(--text-day);
   font-family: 'Inter', sans-serif;
   aspect-ratio: 1 / 1;
+  border: 1px solid #e5e7eb;
+  box-shadow: var(--shadow-ambient);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-key);
 }
 
 .dark .card {
