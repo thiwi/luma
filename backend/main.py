@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine, SessionLocal
-from .routers import events, matching, resonance, artwork
+from .routers import events, matching, resonance, artwork, auth, moodrooms
 from .middleware import PremiumMiddleware
 from . import models
 import uuid
@@ -28,6 +28,8 @@ api_router.include_router(events.router)
 api_router.include_router(matching.router)
 api_router.include_router(resonance.router)
 api_router.include_router(artwork.router)
+api_router.include_router(auth.router)
+api_router.include_router(moodrooms.router)
 
 @api_router.post("/session")
 async def create_session():
@@ -56,4 +58,20 @@ async def websocket_endpoint(websocket, event_id: int):
         pass
     finally:
         await redis.decr(f"event:{event_id}:count")
+        await websocket.close()
+
+
+@app.websocket("/ws/moodrooms/{room_id}")
+async def moodroom_ws(websocket, room_id: int):
+    await websocket.accept()
+    await redis.incr(f"moodroom:{room_id}:count")
+    try:
+        while True:
+            count = int(await redis.get(f"moodroom:{room_id}:count"))
+            await websocket.send_json({"count": count})
+            await websocket.receive_text()
+    except Exception:
+        pass
+    finally:
+        await redis.decr(f"moodroom:{room_id}:count")
         await websocket.close()

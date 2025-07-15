@@ -21,11 +21,18 @@ export default function Header() {
         {open && (
           <div className="absolute right-0 mt-2 bg-white border rounded shadow-md text-sm">
             <Link
-              to="/create"
+              to="/moodrooms/new"
               className="block px-4 py-2 hover:bg-gray-100"
               onClick={() => setOpen(false)}
             >
               Create mood room
+            </Link>
+            <Link
+              to="/moodrooms"
+              className="block px-4 py-2 hover:bg-gray-100"
+              onClick={() => setOpen(false)}
+            >
+              Mood rooms
             </Link>
             <button
               className="block w-full text-left px-4 py-2 hover:bg-gray-100"
