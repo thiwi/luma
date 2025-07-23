@@ -24,7 +24,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="p-4 space-y-4 flex flex-col items-center">
+    <div className="relative p-4 space-y-4 flex flex-col items-center min-h-screen">
       {data && data.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-5xl justify-items-center">
           {data.slice(0, page * 3).map((ev) => (
@@ -41,11 +41,11 @@ export default function Home() {
       )}
       {data && page * 3 < (data?.length ?? 0) && (
         <button
-          className="mt-4 text-black"
+          className="absolute bottom-4 text-sm text-gray-600"
           onClick={() => setPage((p) => p + 1)}
-          aria-label="More"
+          aria-label="More moments"
         >
-          ↓
+          More moments
         </button>
       )}
     </div>
