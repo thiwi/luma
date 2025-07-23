@@ -84,9 +84,8 @@ body {
   background-size: cover;
   border-radius: 18px;
   padding: 24px;
-  width: 100%;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  max-width: 90%;
+  margin: 0 auto;
   color: var(--text-day);
   font-family: 'Inter', sans-serif;
   aspect-ratio: 1 / 1;
